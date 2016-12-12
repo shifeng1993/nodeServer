@@ -1,3 +1,5 @@
+// ps:使用之前请先阅读README.md文件
+//
 /****************************定义和引入********************************/
 // 引入模块
 var http = require('http');
@@ -6,58 +8,132 @@ var app = express();
 var bodyParser = require("body-parser");
 var superagent = require('superagent'); //http://visionmedia.github.io/superagent/#response-properties 文档地址
 var server = http.Server(app);
-var dbUrl = 'http://test.open.com'; //这里写你的后端api地址
+var host = 'http://127.0.0.1:';
+var port = 3333; //设置本地转发服务端口
 
-/****************************以下为设置和启用********************************/
+/*************************以下为设置和启用*****************************/
 // 设置node服务
-app.set('port', 3333);
+app.set('port', port);
 app.use(bodyParser.urlencoded({
   extended: false
 }));
-app.use(bodyParser.json()); //启动中间件解析
+app.use(bodyParser.json());
 
 // 启动服务
-server.listen(app.get('port'), function(){
-	console.log("服务已经启动，APIhost：http://127.0.0.1:3333/");
+server.listen(app.get('port'), function() {
+  console.log("服务已经启动，APIhost：" + host + port);
 });
 
-/******************以下为此服务支持跨域请求*********************不用动，返回数据头部均为json格式**/
+/******************以下为此服务支持跨域请求********************/
 app.all('*', function(req, res, next) {
   res.header('Access-Control-Allow-Origin', '*');
   res.header('Access-Control-Allow-Headers', 'Content-Type, Content-Length, Authorization, Accept, X-Requested-With , yourHeaderFeild');
-  res.header('Access-Control-Allow-Methods', 'PUT, POST, GET, DELETE, OPTIONS');
+  res.header('Access-Control-Allow-Methods', 'PUT, POST, GET, DELETE, OPTIONS, PATCH');
   res.set({
-      'Content-Type':'Content-Type:application/json; charset=UTF-8',
+    'Content-Type': 'Content-Type:application/json; charset=UTF-8',
   })
   if (req.method == 'OPTIONS') {
     res.send(200);
-//     /让options请求快速返回/
   } else {
     next();
   }
 });
 
-/******************以下是api部分****************要修改的地方为前端发送的地址，和后端api实际地址 还有具体的req.type类型*******/
-// form 示例
-app.post('/api/facebook', function(req, res) {   //前端要发送的地址
-  var sreq = superagent.post(dbUrl + '/facebook');  //后端实际api地址
+/******************以下是api公共部分，不用修改***********************/
+// form 请求
+var form = function(req, res, API, log) {
+  var sreq = superagent.post(dbUrl + API);
   sreq.type('form')
   sreq.send(req.body);
   sreq.pipe(res);
   sreq.on('end', function() {
-    console.log('后端成功打印log');
+    console.log(log);
   });
-});
+}
 
-
-// 
-// json示例
-app.post('/api/facebook', function(req, res) {   //前端要发送的地址
-  var sreq = superagent.post(dbUrl + '/facebook');  //后端实际api地址
-  sreq.type('json')   
+// json 请求
+var json = function(req, res, API, log) {
+  var sreq = superagent.post(dbUrl + API);
+  sreq.type('json')
   sreq.send(req.body);
   sreq.pipe(res);
   sreq.on('end', function() {
-    console.log('后端成功打印log');
+    console.log(log);
   });
+}
+
+/******************以下是api私有部分，必须修改***********************/
+
+// 设置后端服务器url
+var dbUrl = 'http://test.com'; //这里写你的后端api地址
+
+//需配置部分
+// app.get('这里写node服务接受前端发送参数的地址', function(req, res) {
+//   var API = '这里写后端java公共api，当然你们后端是什么的随意，，这里只是举个例子。'
+//   var log = '这里写node服务输出logs';
+//   form(req, res, API, log)
+// });
+
+//以下是不同请求发送方式
+
+// form请求示例
+app.get('/api/machine/init', function(req, res) {
+  var API = '/api/v2/machine/init'
+  var log = '初始化机器';
+  form(req, res, API, log)
+});
+
+app.post('/api/machine/init', function(req, res) {
+  var API = '/api/v2/machine/init'
+  var log = '初始化机器';
+  form(req, res, API, log)
+});
+
+app.put('/api/machine/init', function(req, res) {
+  var API = '/api/v2/machine/init'
+  var log = '初始化机器';
+  form(req, res, API, log)
+});
+
+app.patch('/api/machine/init', function(req, res) {
+  var API = '/api/v2/machine/init'
+  var log = '初始化机器';
+  form(req, res, API, log)
+});
+
+app.delete('/api/machine/init', function(req, res) {
+  var API = '/api/v2/machine/init'
+  var log = '初始化机器';
+  form(req, res, API, log)
+});
+
+// json请求示例
+app.get('/api/machine/init', function(req, res) {
+  var API = '/api/v2/machine/init'
+  var log = '初始化机器';
+  json(req, res, API, log)
+});
+
+app.post('/api/machine/init', function(req, res) {
+  var API = '/api/v2/machine/init'
+  var log = '初始化机器';
+  json(req, res, API, log)
+});
+
+app.put('/api/machine/init', function(req, res) {
+  var API = '/api/v2/machine/init'
+  var log = '初始化机器';
+  json(req, res, API, log)
+});
+
+app.patch('/api/machine/init', function(req, res) {
+  var API = '/api/v2/machine/init'
+  var log = '初始化机器';
+  json(req, res, API, log)
+});
+
+app.delete('/api/machine/init', function(req, res) {
+  var API = '/api/v2/machine/init'
+  var log = '初始化机器';
+  json(req, res, API, log)
 });
