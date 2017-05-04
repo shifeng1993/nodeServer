@@ -145,3 +145,4 @@ app.get('/goods/brand', function(req, res) {
   res.send(JSON.stringify(data))
   console.log('goodsbrand')
 })
+
