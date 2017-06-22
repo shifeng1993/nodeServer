@@ -8,11 +8,12 @@
   },
   "author": "",
   "license": "ISC",
-  "devDependencies": {
+  "devDependencies": {},
+  "dependencies": {
     "body-parser": "^1.15.2",
     "express": "^4.14.0",
     "http": "0.0.0",
     "mockjs": "^1.0.1-beta3",
-    "superagent": "^3.0.0"
+    "express-http-proxy": "^1.0.4"
   }
 }
